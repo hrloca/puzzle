@@ -1,0 +1,271 @@
+//------------------------------------------------------------
+// init
+//------------------------------------------------------------
+
+//suport browser
+//////////////////////////////////////////////////
+$suport_ie6: "false";
+$suport_ie7: "false";
+$suport_ie8: "false";
+$suport_sf2: "false";
+
+//browser hacks
+//////////////////////////////////////////////////
+$hacks_ie6: "* html";
+$hacks_ie7: "*:first-child+html";
+$hacks_safari: "html:\66irst-child";
+
+//font family
+//////////////////////////////////////////////////
+$font_sans-serif: ""\30D2\30E9\30AE\30CE\89D2\30B4\20\50\72\6F\20\57\33", "Hiragino Kaku Gothic Pro", "\30E1\30A4\30EA\30AA", Meiryo, "Osaka", \FF2D\FF33\20\FF30\30B4\30B7\30C3\30AF", Helvetica, Arial, sans-serif;
+$font_serif: "\30D2\30E9\30AE\30CE\660E\671D\20\50\72\6F\20\57\33", "Hiragino Mincho Pro", "\FF2D\FF33\20\FF30\660E\671D", "MS PMincho", serif;
+
+
+//------------------------------------------------------------
+//  reset
+//------------------------------------------------------------
+
+//reset
+//////////////////////////////////////////////////
+@mixin all-reset( $font: $font_sans-serif, $html5: false ) {
+  body, div, pre, p, blockquote, em, strong,
+  form, fieldset,
+  dl, dt, dd, ul, ol, li,
+  h1, h2, h3, h4, h5, h6,
+  table, tr, th, td,
+  embed, object {
+    @include clear-style($font);
+  }
+  @if $html5 != false {
+    @include reset-html5($font);
+  }
+  table { border-collapse: collapse; border-spacing: 0; }
+  textarea { font-size: 100%; }
+  caption,th { text-align: left; }
+  img { border: 0; vertical-align: top; }
+  hr,legend { display: none; }
+  ul,ol { list-style: none; }
+  br{ letter-spacing:0px; }
+  //Label Clickable
+  label {
+    cursor: pointer;
+    @if $suport_sf2 == "true" { #{$hacks_safari} & { cursor: auto; } }
+  }
+}
+
+//reset box model & font style
+@mixin clear-style( $font_family: $font_sans-serif ) {
+  @include reset-style;
+  @include reset-font($font_family);
+}
+
+//reset box model
+@mixin reset-style {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+@mixin reset-focus {
+  outline: 0;
+}
+
+//reset box model & font style
+@mixin reset-font($family: $font_sans-serif) {
+  @include set-font($family, normal, normal);
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+//html5 new tag set reset class
+@mixin reset-html5($font) {
+  article, aside, canvas, details,
+  figcaption, figure, footer, header,
+  hgroup, menu, nav, section, summary,
+  audio, video, time, mark
+  {
+    @include reset-style;
+    @include reset-font($font);
+    display: block;
+  }
+}
+
+//font
+//////////////////////////////////////////////////
+$default_font_size: 16;
+//font
+@mixin set-font( $family: inherit, $weight: inherit, $style: inherit, $size: 100%){
+  font: {
+    weight : $weight;
+    style : $style;
+    size : $size;
+    family : $family;
+  }
+}
+
+//defalt fontSize
+@mixin default-font-size($defaultSize: 12, $unit: '%'){
+  body{
+    @if $unit == '%' {
+      font-size: $defaultSize / 16 * 100#{$unit};
+      $default_font_size: $defaultSize;
+    } @else {
+      font-size: $defaultSize#{$unit};
+      $default_font_size: $defaultSize;
+    }
+  }
+}
+
+//fontSize
+@mixin font-size($size: 12, $unit: '%', $context: $default_font_size){
+  & {
+    @if $unit == '%' {
+      font-size: $size / $context * 100#{$unit};
+    } @else {
+      font-size: $size#{$unit};
+    }
+  }
+}
+
+
+//------------------------------------------------------------
+// modle
+//------------------------------------------------------------
+
+// clearfix
+//////////////////////////////////////////////////
+@mixin clearfix() {
+  @if $suport_ie6 == "true" {
+    #{$hacks_ie6} & { height: 1%; }
+  }
+  @if $suport_ie7 == "true" {
+    #{$hacks_ie7} & { min-height: 1%; }
+  }
+  &:after {
+    display: block;
+    clear: both;
+    height: 0;
+    visibility: hidden;
+    content: "";
+  }
+}
+
+// link
+//////////////////////////////////////////////////
+@mixin link( $linkColor, $hoverColor, $visitedColor, $linkLine, $hoverLine ){
+  a{
+    color           : $linkColor;
+    text-decoration : $linkLine;
+    &:link    { color:$linkColor; text-decoration:$linkLine;}
+    &:visited { color:$visitedColor; text-decoration:$linkLine;}
+    &:hover   { color:$hoverColor; text-decoration:$hoverLine;}
+    &:active  { color:$linkColor; text-decoration:$hoverLine;}
+    &:focus   { color:$linkColor; text-decoration:$hoverLine;}
+  }
+}
+
+// min-height
+//////////////////////////////////////////////////
+@mixin min-height($height: 1px ){
+  min-height: $height;
+  #{$hacks_ie6} & { height: $height; }
+  #{$hacks_ie7} & { min-height: $height; }
+}
+
+// haslayout
+//////////////////////////////////////////////////
+@mixin haslayout(){
+  #{$hacks_ie6} & { height: 1%; }
+  #{$hacks_ie7} & { min-height: 1%; }
+}
+
+//------------------------------------------------------------
+//  css3
+//------------------------------------------------------------
+
+// text-size-adjust
+//////////////////////////////////////////////////
+@mixin opacity($opacity){
+  -ms-filter: "alpha( opacity=" + $opacity * 100 + " )";
+  filter: alpha( opacity=$opacity * 100 );
+  opacity: $opacity;
+}
+
+// text-size-adjust
+//////////////////////////////////////////////////
+@mixin text-size-adjust($flg: true){
+  body {
+    @if $flg != false { -webkit-text-size-adjust: none; }
+  }
+}
+
+// border-radius
+//////////////////////////////////////////////////
+@mixin border-radius($radius: 5px){
+  border-radius : $radius;
+  -moz-border-radius : $radius;
+  -webkit-border-radius : $radius;
+  -o-border-radius : $radius;
+  -ms-border-radius : $radius;
+}
+@mixin border-top-left-radius($radius: 5px) {
+  border-top-left-radius: $radius;
+  -moz-border-top-left-radius: $radius;
+  -webkit-border-top-left-radius: $radius;
+  -o-border-top-left-radius: $radius;
+  -ms-border-top-left-radius: $radius; 
+}
+@mixin border-top-right-radius($radius: 5px) {
+  border-top-right-radius: $radius;
+  -moz-border-top-right-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+  -o-border-top-right-radius: $radius;
+  -ms-border-top-right-radius: $radius; 
+}
+@mixin border-bottom-left-radius($radius: 5px) {
+  border-bottom-left-radius: $radius;
+  -moz-border-bottom-left-radius: $radius;
+  -webkit-border-bottom-left-radius: $radius;
+  -o-border-bottom-left-radius: $radius;
+  -ms-border-bottom-left-radius: $radius; 
+}
+@mixin border-bottom-right-radius($radius: 5px) {
+  border-bottom-right-radius: $radius;
+  -moz-border-bottom-right-radius: $radius;
+  -webkit-border-bottom-right-radius: $radius;
+  -o-border-bottom-right-radius: $radius;
+  -ms-border-bottom-right-radius: $radius; 
+}
+
+// background-size
+//////////////////////////////////////////////////
+@mixin background-size($width, $height){
+  background-size : $width $height;
+  -moz-background-size : $width $height;
+  -webkit-background-size : $width $height;
+  -o-background-size : $width $height;
+  -ms-background-size : $width $height;
+}
+
+// background-origin
+//////////////////////////////////////////////////
+@mixin background-origin($origin: content-box){
+  background-origin: $origin;
+  -moz-background-origin: $origin;
+  -webkit-background-origin: $origin;
+  -ms-background-origin: $origin;
+  -o-background-origin: $origin;
+}
+
+// linear-gradient
+//////////////////////////////////////////////////
+@mixin linear-gradient($from, $top ,$flag: v){
+  @if $flag != v {
+    background: -moz-linear-gradient(left, $from, $top);
+    background: -webkit-gradient(linear, left top, right top, from($from), to($top));
+  } @else {
+    background: -moz-linear-gradient($from, $top);
+    background: -webkit-gradient(linear, left top, left bottom, from($from), to($top));
+  }
+}
